@@ -33,6 +33,19 @@
 									<tr th:each="library : ${libraries}">
 										<td th:text="${library.id}"></td>
 										<td th:text="${library.name}"></td>
+										<td>
+											<div th:switch="${library.userId}">
+												<form th:case="0" th:action="@{/library/borrow}" method="get">
+													<input type="hidden" name="id" th:value="${library.id}">
+													<input class="btn btn-info" type="submit" value="borrow">
+												</form>
+												<form th:case="${#authentication.principal.user.id}" th:action="@{/library/return}" method="post">
+													<input type="hidden" name="id" th:value="${library.id}">
+													<input class="btn btn-danger" type="submit" value="return">
+												</form>
+												<div th:case="*" class="btn btn-success">borrowing</div>
+											</div>
+										</td>
 									</tr>
 								</tbody>
 							</table>
