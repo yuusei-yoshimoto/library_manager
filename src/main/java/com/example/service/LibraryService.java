@@ -28,4 +28,7 @@ public class LibraryService {
 		return library;
 	}
 
+	public Library save(Library library) {
+		return this.libraryRepository.save(library);
+	}
 }

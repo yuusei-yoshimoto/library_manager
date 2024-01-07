@@ -45,10 +45,10 @@ public class LibraryController {
 	public String borrowingForm(@RequestParam("id") Integer id
 			, Model model) {
 		Library library = this.libraryService.findById(id);
-		library.setName(library.getName());
-		library.setUserId(library.getUserId());
 		model.addAttribute("id", id);
 		model.addAttribute("library", library);
+		library.setName(library.getName());
+		library.setUserId(library.getUserId());
 		return "library/borrowingForm";
 	}
 
@@ -67,6 +67,16 @@ public class LibraryController {
 	    log.setReturnDueDate(date.atStartOfDay());
 	    log.setReturnDate(null);
 		this.logService.save(log);
+		return "redirect:/library";
+	}
+
+	@PostMapping("/return")
+	public String returnBook(@RequestParam("id") Integer id
+			, @AuthenticationPrincipal LoginUser loginUser) {
+		Library library = this.libraryService.findById(id);
+		library.setUserId(0);
+		this.libraryService.save(library);
+		this.logService.update(id, loginUser.getUser().getId());
 		return "redirect:/library";
 	}
 

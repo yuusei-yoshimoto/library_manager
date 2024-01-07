@@ -7,5 +7,5 @@ import com.example.entity.Log;
 
 @Repository
 public interface LogRepository extends JpaRepository<Log, Integer> {
-
+	public Log findTopByLibraryIdAndUserIdOrderByRentDateDesc(Integer libraryId, Integer userId);
 }
