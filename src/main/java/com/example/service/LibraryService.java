@@ -19,7 +19,7 @@ public class LibraryService {
 	}
 
 	public List<Library> findAll() {
-		return this.libraryRepository.findAll();
+		return this.libraryRepository.findAllByOrderByIdAsc();
 	}
 
 	public Library findById(Integer id) {
