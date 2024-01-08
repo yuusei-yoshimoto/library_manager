@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -56,17 +55,18 @@ public class LibraryController {
 	public String borrow(@RequestParam("id") Integer id
 				, @RequestParam("return_due_date") String returnDueDate
 				, @AuthenticationPrincipal LoginUser loginUser) {
-		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate date = LocalDate.parse(returnDueDate, format);
 		Library library = this.libraryService.findById(id);
 		library.setUserId(loginUser.getUser().getId());
+		this.libraryService.save(library);
+
 		Log log = new Log();
 	    log.setLibraryId(library.getId());
 	    log.setUserId(loginUser.getUser().getId());
 	    log.setRentDate(LocalDateTime.now());
-	    log.setReturnDueDate(date.atStartOfDay());
+	    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    log.setReturnDueDate(LocalDateTime.parse(returnDueDate + " 00:00:00", format));
 	    log.setReturnDate(null);
-		this.logService.save(log);
+	    this.logService.save(log);
 		return "redirect:/library";
 	}
 
@@ -78,6 +78,14 @@ public class LibraryController {
 		this.libraryService.save(library);
 		this.logService.update(id, loginUser.getUser().getId());
 		return "redirect:/library";
+	}
+
+	@GetMapping("/history")
+	public String history(Model model
+			, @AuthenticationPrincipal LoginUser loginUser) {
+		List<Log> logs = this.logService.findByUserId(loginUser.getUser().getId());
+		model.addAttribute("logs", logs);
+		return "library/borrowHistory";
 	}
 
 }

@@ -23,6 +23,10 @@ public class LogService {
 		return this.logRepository.findAll();
 	}
 
+	public List<Log> findByUserId(Integer userId) {
+		return this.logRepository.findByUserId(userId);
+	}
+
 	public Log save(Log log) {
 	    return this.logRepository.save(log);
 	}
